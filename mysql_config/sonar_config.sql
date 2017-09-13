@@ -1,0 +1,7 @@
+
+
+
+
+CREATE USER 'sonar' IDENTIFIED BY 'sonar';
+GRANT ALL PRIVILEGES ON * . * TO 'sonar';
+FLUSH PRIVILEGES;

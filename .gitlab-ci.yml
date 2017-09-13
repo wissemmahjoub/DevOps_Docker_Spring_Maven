@@ -1,0 +1,61 @@
+stages:
+  - Build
+  - Connect_container
+  - Test_qualite
+
+Connect_container:
+  stage: Connect_container
+  script: 
+    - cd /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD/wildfly-configured/
+    - docker-compose up -d
+#--
+  tags:
+    - compose
+  only: 
+    - master
+
+Build:
+  stage: Build
+  script:
+    #-****************** DOCKER -- link ***********************
+
+    #- docker run --name wildfly-image --link customfile_mysqldb_1 -p 8081:8080 -p 8090:8090  -p 10000:10000 java_linked
+
+ #--------------------------------------------------------------------------------------------
+    - whoami
+    - docker stop $(docker ps -a -q) || true 
+    - docker rm $(docker ps -a -q) || true
+ #--------------------------------------------------------------------------------------------
+    - cd /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD
+    - docker build -f Dockerfile -t maven-image .
+  #--------------------------------------------------------------------------------------------
+    - cd /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD
+    - docker run -dit --name maven-container_ -v "$(pwd)":/opt/maven -w /opt/maven maven-image sh -c " mvn clean install" 
+  #--------------------------------------------------------------------------------------------
+    - docker  cp maven-container_:/opt/maven/target/SpringMVCHibernateCRUD.war /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD/wildfly-configured/target/
+    - cd /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD/wildfly-configured/
+    - docker build -f Dockerfile -t wildfly-image .
+
+    #- docker run --name customfile_mysqldb_1 -e MYSQL_ROOT_PASSWORD=123456 -d mysql_configured_1
+
+
+
+  tags:
+    - compose
+  only: 
+    - master
+
+Test_qualite:
+  stage: Test_qualite
+  script:
+
+    - cd /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD
+    - bash script.sh
+   # - chmod -R +x .
+    - mvn verify sonar:sonar
+    
+  tags:
+    - compose
+  only: 
+    - master
+#9

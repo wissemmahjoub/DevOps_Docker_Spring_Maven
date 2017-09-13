@@ -1,0 +1,5 @@
+projectKey=com.jwt.spring:SpringMVCHibernateCRUD
+serverUrl=http://localhost:9123
+dashboardUrl=http://localhost:9123/dashboard/index/com.jwt.spring:SpringMVCHibernateCRUD
+ceTaskId=AV4JbXQgd02ZQakc7gYd
+ceTaskUrl=http://localhost:9123/api/ce/task?id=AV4JbXQgd02ZQakc7gYd

@@ -1,0 +1,52 @@
+mysqldb:
+  image: mysql_configured
+  environment:
+    MYSQL_DATABASE: spring
+    MYSQL_PASSWORD: 123456
+    MYSQL_ROOT_PASSWORD: 123456
+#  entrypoint: /bin/bash
+  container_name: customfile_mysqldb_1
+
+
+mysqldb_sonar:
+  build: /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD/mysql_config
+  environment:
+    MYSQL_DATABASE: sonar
+    MYSQL_PASSWORD: sonar
+    MYSQL_ROOT_PASSWORD: sonar
+  container_name: customfile_mysqldb_1_sonar
+
+ #******************
+sonarqube:
+  image: sonar_img:latest
+  ports:
+    - '9000:9000'
+  container_name: sonar_c
+  links:
+    - mysqldb_sonar
+#********************************************************************
+
+mywildfly:
+  image: wildfly-image
+  ports:
+    - '8009:8090'
+    - '8008:8080'
+    - '10000:10000'
+  container_name: wildlfy_c
+  links:
+    - mysqldb
+
+
+
+#maven-project:
+#  build: /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD/
+#  container_name: maven-container_
+#  links:
+#    - sonarqube
+
+#sonar-runner:
+#  build: /home/wissem/Documents/docker-stage/SpringMVCHibernateCRUD/SonarQube/Runner
+#  container_name: runner_c
+#  links:
+#    - sonarqube
+#    - mysqldb
