@@ -58,4 +58,3 @@ Test_qualite:
     - compose
   only: 
     - master
-#9
